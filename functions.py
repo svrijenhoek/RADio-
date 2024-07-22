@@ -1,5 +1,6 @@
 import pandas as pd
 import ast
+import numpy as np
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
@@ -95,21 +96,30 @@ Preparing the prediction files. This means:
 
 def order(row):
     prediction = row['pred_rank']
-    behavior_row = behaviors.loc[row.name]
+    behavior_row = behaviors.loc[row['impr_index']]
     # match the predicted ordering from pred_rank with the right article id as it is specified in
     # the behavior file impression
     ordered = [behavior_row.impression[prediction[i] - 1] for i in range(len(prediction))]
     return ordered
 
 
-def process_predictions(location):
-    global predictions
-    predictions = pd.read_json(location, lines=True).set_index('impr_index')
-    # only include the predictions that are in the behavior file sample
-    predictions = predictions.loc[behaviors.index]
+def process_predictions(location, algorithm):
+    pred = pd.read_json(location, lines=True)
+    # pred = pred.join(behaviors['date'])
+    # only include the predictions that are in the behavior file sample]
+    pred = pred[pred['impr_index'].isin(behaviors.index)]
     # add column where the recommendation is the ranked list of article ids
-    predictions['recommendation'] = predictions.apply(order, axis=1)
+    pred['recommendation'] = pred.apply(order, axis=1)
     # add date of prediction
-    predictions = predictions.join(behaviors['date'])
-    return predictions
+    pred['algorithm'] = algorithm
+
+    dates = behaviors[['date']].rename_axis('impr_index')
+    result = pd.merge(pred, dates, on='impr_index', how='left')
+    return result
+
+
+def process_random(df):
+    df['recommendation'] = df['recommendation'].map(lambda x: np.random.permutation(x))
+    df['algorithm'] = 'random'
+    return df
 
