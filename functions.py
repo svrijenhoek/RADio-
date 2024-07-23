@@ -66,7 +66,8 @@ def extract_people(row):
 
 def select(lst, feature):
     try:
-        return list(articles.loc[lst][feature])
+        result = list(articles.loc[lst][feature])
+        return result
     except KeyError:
         return []
 
@@ -94,22 +95,22 @@ Preparing the prediction files. This means:
 """
 
 
-def order(row):
+def order(row, recommendation_length):
     prediction = row['pred_rank']
     behavior_row = behaviors.loc[row['impr_index']]
     # match the predicted ordering from pred_rank with the right article id as it is specified in
     # the behavior file impression
-    ordered = [behavior_row.impression[prediction[i] - 1] for i in range(len(prediction))]
+    ordered = [behavior_row.impression[prediction[i] - 1] for i in range(min(len(prediction), recommendation_length))]
     return ordered
 
 
-def process_predictions(location, algorithm):
+def process_predictions(location, algorithm, recommendation_length):
     pred = pd.read_json(location, lines=True)
     # pred = pred.join(behaviors['date'])
     # only include the predictions that are in the behavior file sample]
     pred = pred[pred['impr_index'].isin(behaviors.index)]
     # add column where the recommendation is the ranked list of article ids
-    pred['recommendation'] = pred.apply(order, axis=1)
+    pred['recommendation'] = pred.apply(lambda x: order(x, recommendation_length), axis=1)
     # add date of prediction
     pred['algorithm'] = algorithm
 
@@ -118,8 +119,16 @@ def process_predictions(location, algorithm):
     return result
 
 
-def process_random(df):
-    df['recommendation'] = df['recommendation'].map(lambda x: np.random.permutation(x))
+def randomize(row, recommendation_length):
+    behavior_row = behaviors.loc[row['impr_index']]
+    # match the predicted ordering from pred_rank with the right article id as it is specified in
+    # the behavior file impression
+    randomized = np.random.permutation(behavior_row['impression'])[:recommendation_length]
+    return randomized
+
+
+def process_random(df, recommendation_length):
+    df['recommendation'] = df.apply(lambda x: randomize(x, recommendation_length), axis=1)
     df['algorithm'] = 'random'
     return df
 
