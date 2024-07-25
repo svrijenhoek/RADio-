@@ -34,7 +34,7 @@ class Divergence:
                 merged[key] = other[key]
         return merged
 
-    def compute(self, s, q, alpha=0.001):
+    def compute(self, s, q, alpha=0.0001):
         """
         KL (p || q), the lower the better.
         alpha is not really a tuning parameter, it's just there to make the
