@@ -64,14 +64,6 @@ def extract_people(row):
         return []
 
 
-def select(lst, feature):
-    try:
-        result = list(articles.loc[lst][feature])
-        return result
-    except KeyError:
-        return []
-
-
 def process_articles(location):
     global articles
     articles = pd.read_csv(location, sep='\t',
@@ -85,6 +77,23 @@ def process_articles(location):
     articles['persons'] = articles['entities_title'].apply(extract_people) + articles['entities_subtitle'].apply(
         extract_people)
     return articles
+
+
+def select(lst, feature):
+    """
+    Function that helps extract the relevant features for a recommendation. Returns for each impr_index in the list the
+    corresponding feature, in the same order as in the list.
+
+    Example for feature 'category':
+        articles: [{'impr_index': 'N1', 'category': 'news'},{'impr_index': 'N2', 'category': 'sport'},{'impr_index': 'N3', 'category': 'entertainment'}]
+        lst : ['N2','N3','N1']
+        output: ['sport','entertainment','news']
+    """
+    try:
+        result = list(articles.loc[lst][feature])
+        return result
+    except KeyError:
+        return []
 
 
 """
