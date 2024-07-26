@@ -32,7 +32,7 @@ class Divergence:
                 merged[key] = other[key]
         return merged
 
-    def compute(self, s, q, alpha=0.0001):
+    def compute(self, s, q, alpha=0.001):
         """
         KL (p || q), the lower the better.
         alpha is not really a tuning parameter, it's just there to make the
@@ -51,10 +51,10 @@ class Divergence:
         qq = []
         merged_dic = self.opt_merge_max_mappings(q, s)
         for key in sorted(merged_dic.keys()):
-            recom_score = s.get(key, 0.)
-            pool_score = q.get(key, 0.)
-            qq.append((1 - alpha) * pool_score + alpha * recom_score)
-            ss.append((1 - alpha) * recom_score + alpha * pool_score)
+            s_score = s.get(key, 0.)
+            q_score = q.get(key, 0.)
+            qq.append((1 - alpha) * s_score + alpha * q_score)
+            ss.append((1 - alpha) * q_score + alpha * s_score)
         if self.metric == 'JSD':
             return self.JSD(ss, qq)
         elif self.metric == 'KL':

@@ -81,7 +81,7 @@ def process_articles(location):
     return articles
 
 
-def select(lst, feature):
+def make_list(lst, feature):
     """
     Function that helps extract the relevant features for a recommendation. Returns for each impr_index in the list the
     corresponding feature, in the same order as in the list.
@@ -96,6 +96,7 @@ def select(lst, feature):
         return result
     except KeyError:
         return []
+
 
 
 """

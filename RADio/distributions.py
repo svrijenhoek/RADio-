@@ -47,14 +47,12 @@ class DistributionBuilder:
         """
         n = len(x)
         sum_one_over_ranks = self.harmonic_number(n)
-        count = 0
         distribution = {}
         for i, item in enumerate(x):
             rank = i + 1
             feature_freq = distribution.get(item, 0.)
             distribution[item] = feature_freq + 1 * 1 / rank / \
                                  sum_one_over_ranks if self.discount else feature_freq + 1 * 1 / n
-            count += 1
         return distribution
 
     def categorical_multi(self, x):
