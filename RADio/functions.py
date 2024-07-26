@@ -33,7 +33,9 @@ def process_behavior(location, sample_size):
     behaviors['impression'] = behaviors['items'].apply(remove_suffix)
 
     if sample_size > 0:
-        behaviors = behaviors.sample(n=sample_size)
+        unique_users = behaviors.userid.unique()
+        selected_users = np.random.choice(unique_users, size=sample_size, replace=False)
+        behaviors = behaviors[behaviors['userid'].isin(selected_users)]
 
     return behaviors
 
@@ -123,8 +125,8 @@ def process_predictions(location, algorithm, recommendation_length):
     # add date of prediction
     pred['algorithm'] = algorithm
 
-    dates = behaviors[['date']].rename_axis('impr_index')
-    result = pd.merge(pred, dates, on='impr_index', how='left')
+    to_merge = behaviors[['date', 'userid']].rename_axis('impr_index')
+    result = pd.merge(pred, to_merge, on='impr_index', how='left')
     return result
 
 
