@@ -36,7 +36,6 @@ def process_behavior(location, sample_size):
         unique_users = behaviors.userid.unique()
         selected_users = np.random.choice(unique_users, size=sample_size, replace=False)
         behaviors = behaviors[behaviors['userid'].isin(selected_users)]
-
     return behaviors
 
 
@@ -116,6 +115,17 @@ def order(row, recommendation_length):
     return ordered
 
 
+def process_recommendations(location):
+    pred = pd.read_json(location)
+    pred['impr_index'] = pred.index
+    pred = pred[pred['impr_index'].isin(behaviors.index)]
+
+    columns = list(pred.columns)
+    not_algorithms = ['impr_index', 'userid', 'date']
+    algorithms = [ele for ele in columns if ele not in not_algorithms]
+    return algorithms, pred
+
+
 def process_predictions(location, algorithm, recommendation_length):
     pred = pd.read_json(location, lines=True)
     # pred = pred.join(behaviors['date'])
@@ -129,6 +139,19 @@ def process_predictions(location, algorithm, recommendation_length):
     to_merge = behaviors[['date', 'userid']].rename_axis('impr_index')
     result = pd.merge(pred, to_merge, on='impr_index', how='left')
     return result
+
+# # Use this code in the notebook if required
+# data = []
+# for algorithm in algorithms:
+#     prediction = process_predictions(data_folder + '/' + algorithm + '_pred.json', algorithm, recommendation_length)
+#     data.append(prediction)
+#
+# if add_random_baseline:
+#     random = process_random(copy.deepcopy(data[0]), recommendation_length)
+#     data.append(random)
+#     algorithms.append('random')
+#
+# predictions = pd.concat(data).reset_index(drop=True)
 
 
 def randomize(row, recommendation_length):

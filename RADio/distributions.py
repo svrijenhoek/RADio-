@@ -48,10 +48,11 @@ class DistributionBuilder:
         n = len(x)
         sum_one_over_ranks = self.harmonic_number(n)
         distribution = {}
-        for i, item in enumerate(x):
-            rank = i + 1
+        count = 0
+        for _, item in enumerate(x):
+            count += 1
             feature_freq = distribution.get(item, 0.)
-            distribution[item] = feature_freq + 1 * 1 / rank / \
+            distribution[item] = feature_freq + 1 * 1 / count / \
                                  sum_one_over_ranks if self.discount else feature_freq + 1 * 1 / n
         return distribution
 
