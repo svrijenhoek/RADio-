@@ -115,14 +115,17 @@ def order(row, recommendation_length):
     return ordered
 
 
-def process_recommendations(location):
+def process_recommendations(location, sample_size):
     pred = pd.read_json(location)
-    pred['impr_index'] = pred.index
-    pred = pred[pred['impr_index'].isin(behaviors.index)]
 
     columns = list(pred.columns)
-    not_algorithms = ['impr_index', 'userid', 'date']
+    not_algorithms = ['impr_index', 'userid', 'date', 'history']
     algorithms = [ele for ele in columns if ele not in not_algorithms]
+
+    if sample_size > 0:
+        unique_users = pred.userid.unique()
+        selected_users = np.random.choice(unique_users, size=sample_size, replace=False)
+        pred = pred[pred['userid'].isin(selected_users)]
     return algorithms, pred
 
 
