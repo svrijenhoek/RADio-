@@ -17,8 +17,8 @@ class Divergence:
         """ Merges two dictionaries based on the largest value in a given mapping.
         Parameters
         ----------
-        distr_pool : Dict[Any, Comparable]
-        distr_recommendation : Dict[Any, Comparable]
+        a : Dict[Any, Comparable]
+        b : Dict[Any, Comparable]
         Returns
         -------
         Dict[Any, Comparable]
@@ -34,7 +34,7 @@ class Divergence:
 
     def compute(self, s, q, alpha=0.001):
         """
-        KL (p || q), the lower the better.
+        KL (p || q), the lower the more similar the distributions are.
         alpha is not really a tuning parameter, it's just there to make the
         computation more numerically stable.
         """

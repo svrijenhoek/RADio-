@@ -5,6 +5,17 @@ from RADio.distributions import DistributionBuilder
 
 
 class DiversityMetric:
+    """
+    Base class for the diversity metrics. Can be configured to reflect the type of diversity necessary in your
+    application.
+    feature_type: [categorical (cat), categorical multi (cat_m), continuous (cont)]
+    rank_aware_recommendation: boolean; should the values in the recommendation be discounted based on position
+    rank_aware_context: boolean; should the values in the context be discounted based on position
+    bins: int; optional, number of bins to use for discretization
+    context_type: [dynamic, static]; for efficiency; should the context distribution be calculated every time, or is it
+                    always the same?
+    metric: [JSD, KL]; to use the Jensen-Shannon Divergence or Kullback-Leibler Divergence
+    """
 
     def __init__(self, **kwargs):
         self.feature_type = kwargs.get('feature_type', 'cat')

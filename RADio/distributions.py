@@ -6,11 +6,14 @@ from sklearn.preprocessing import KBinsDiscretizer
 class DistributionBuilder:
     """
     Class that turns a list of properties into a normalized distribution
+    feature_type: [categorical (cat), categorical_multi (cat_m), continuous (cont)]
+    rank_aware: should the values be discounted based on their rank in the recommendation
+    bins: optional - into how many bins should continuous values be divided
     """
 
-    def __init__(self, feature_type, discount, **kwargs):
+    def __init__(self, feature_type, rank_aware, **kwargs):
         self.feature_type = feature_type
-        self.discount = discount
+        self.rank_aware = rank_aware
 
         if self.feature_type == 'cont':
             bins = kwargs.get('bins', 10)
@@ -53,15 +56,16 @@ class DistributionBuilder:
             count += 1
             feature_freq = distribution.get(item, 0.)
             distribution[item] = feature_freq + 1 * 1 / count / \
-                                 sum_one_over_ranks if self.discount else feature_freq + 1 * 1 / n
+                                 sum_one_over_ranks if self.rank_aware else feature_freq + 1 * 1 / n
         return distribution
 
     def categorical_multi(self, x):
         """"
+        Build distributions where the relevant feature can have multiple values. For example, multiple people can be
+        mentioned in an article, or an article can have multiple topics/categories assigned.
         Parameters
         ----------
         x : List of properties, where the first entry refers to the first article, the second entry to the second, etc.
-        r : Boolean. Should the distribution be discounted or not
         Returns
         -------
         Dictionary where every entry refers to the presence of that property in the distribution.
@@ -75,8 +79,8 @@ class DistributionBuilder:
                 rank = i + 1
                 feature_freq = distribution.get(entry, 0.)
                 distribution[entry] = feature_freq + 1 * 1 / rank / \
-                                     sum_one_over_ranks if self.discount else feature_freq + 1 * 1 / n
-
+                                     sum_one_over_ranks if self.rank_aware else feature_freq + 1 * 1 / n
+        # normalizing the distribution is a bit harder when it's unknown how many entities should be accounted for
         if len(distribution) > 0:
             factor = 1.0 / sum(distribution.values())
             for k in distribution:
@@ -86,11 +90,22 @@ class DistributionBuilder:
             return None
 
     def continuous(self, x):
+        """"
+        List of continuous values. Since the divergence-based metric is essentially categorical, these values are first
+        binned. This means that we lose information about ordering, and could use improvement in the future.
+        Parameters
+        ----------
+        x : List of properties, where the first entry refers to the first article, the second entry to the second, etc.
+        Returns
+        -------
+        Dictionary where every entry refers to the presence of that property in the distribution.
+
+        """
         n = len(x)
         sum_one_over_ranks = self.harmonic_number(n)
         arr_binned = self.bins_discretizer.transform(np.array(x).reshape(-1, 1))
         distribution = {}
-        if self.discount:
+        if self.rank_aware:
             for bin in list(range(self.bins_discretizer.n_bins)):
                 for i, ele in enumerate(arr_binned[:, 0]):
                     if ele == bin:

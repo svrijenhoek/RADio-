@@ -12,34 +12,6 @@ predictions = pd.DataFrame()
 
 
 """
-Behavior file preprocessing. This includes:
-- Transforming string-columns to lists
-- Adding an extra column that contains the news articles in the impression without the click indication
-- Sampling
-"""
-
-
-def remove_suffix(lst):
-    return [item.split("-")[0] for item in lst]
-
-
-def process_behavior(location, sample_size):
-    global behaviors
-    behaviors = pd.read_csv(location, sep='\t',
-                            names=['impr_index', 'userid', 'date', 'history', 'items'], index_col=0)
-
-    behaviors['history'] = behaviors['history'].str.split()
-    behaviors['items'] = behaviors['items'].str.split()
-    behaviors['impression'] = behaviors['items'].apply(remove_suffix)
-
-    if sample_size > 0:
-        unique_users = behaviors.userid.unique()
-        selected_users = np.random.choice(unique_users, size=sample_size, replace=False)
-        behaviors = behaviors[behaviors['userid'].isin(selected_users)]
-    return behaviors
-
-
-"""
 Article preprocessing. This includes:
 - Sentiment analysis
 - Adding an extra column that contains the people mentioned in the title entities and subtitle entities columns
@@ -127,46 +99,3 @@ def process_recommendations(location, sample_size):
         selected_users = np.random.choice(unique_users, size=sample_size, replace=False)
         pred = pred[pred['userid'].isin(selected_users)]
     return algorithms, pred
-
-
-def process_predictions(location, algorithm, recommendation_length):
-    pred = pd.read_json(location, lines=True)
-    # pred = pred.join(behaviors['date'])
-    # only include the predictions that are in the behavior file sample]
-    pred = pred[pred['impr_index'].isin(behaviors.index)]
-    # add column where the recommendation is the ranked list of article ids
-    pred['recommendation'] = pred.apply(lambda x: order(x, recommendation_length), axis=1)
-    # add date of prediction
-    pred['algorithm'] = algorithm
-
-    to_merge = behaviors[['date', 'userid']].rename_axis('impr_index')
-    result = pd.merge(pred, to_merge, on='impr_index', how='left')
-    return result
-
-# # Use this code in the notebook if required
-# data = []
-# for algorithm in algorithms:
-#     prediction = process_predictions(data_folder + '/' + algorithm + '_pred.json', algorithm, recommendation_length)
-#     data.append(prediction)
-#
-# if add_random_baseline:
-#     random = process_random(copy.deepcopy(data[0]), recommendation_length)
-#     data.append(random)
-#     algorithms.append('random')
-#
-# predictions = pd.concat(data).reset_index(drop=True)
-
-
-def randomize(row, recommendation_length):
-    behavior_row = behaviors.loc[row['impr_index']]
-    # match the predicted ordering from pred_rank with the right article id as it is specified in
-    # the behavior file impression
-    randomized = np.random.permutation(behavior_row['impression'])[:recommendation_length]
-    return randomized
-
-
-def process_random(df, recommendation_length):
-    df['recommendation'] = df.apply(lambda x: randomize(x, recommendation_length), axis=1)
-    df['algorithm'] = 'random'
-    return df
-
