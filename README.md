@@ -11,9 +11,9 @@ Ensure that the data folder contains the following files:
     Tab-separated file as supplied in the MIND dataset. To be usable, entities need to have a Label and a Type. Example: <br>
     N12733	news	politics	"Here comes the title"  "Here comes the subtitle"		url	[{"Label": "Entity Label from title", "Type": "O"]	[{"Label": "Entity Label from subtitle", "Type": "O"] <br>
 - recommendations.json  <br>
-    JSON files containing the generated recommendations. Should contain the fields impr_index, userid, date and history (optionally ordered by recency). The other columns will be interpreted as 'recommendation' columns, and their names as the name of the algorithm used. Example: <br>
+    JSON files containing the generated recommendations that reads into a DataFrame. Should contain the fields impr_index, userid, date and history (optionally ordered by recency). The other columns will be interpreted as 'recommendation' columns, and their names as the name of the algorithm used. Example: <br>
      impr_index  userid  date        history         lstur           random <br>
-     34          U1234   13-08-1991  [N5, N4, N3],   [N1, N2, N3],   [N3, N2, N1] <br>
+     34          U1234   13-08-2023  [N5, N4, N3],   [N1, N2, N3],   [N3, N2, N1] <br>
 <br>    
 The news.tsv follows the same format as the MIND dataset. The recommendations can be constructed from training the [Microsoft Recommenders](https://github.com/microsoft/recommenders), and merging those with the relevant information (userid, date, history) from the MIND behavior file. For more details about the MIND format, see [the MIND website](https://github.com/msnews/msnews.github.io/blob/master/assets/doc/introduction.md). The repository currently contains a sample of 100 rows and predictions, which correspond to MINDsmall_dev. Reach out to us for an example of the full file.
 
