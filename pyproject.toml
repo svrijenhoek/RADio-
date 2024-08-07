@@ -1,0 +1,11 @@
+[project]
+name = "normative_diversity"
+description = "Normative Diversity"
+version = "0.0.1"
+authors = [{ name = "Sanne Vrijenhoek", email = "s.vrijenhoek@uva.nl" }]
+requires-python = ">=3.6"
+dependencies = []
+
+[project.optional-dependencies]
+# pip install "my_project[extras]"
+tests = ["pytest"]
