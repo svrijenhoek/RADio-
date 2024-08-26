@@ -1,8 +1,0 @@
-nltk==3.8.1
-numpy==1.19.5
-pandas==1.1.5
-plotly==5.9.0
-scikit_learn==1.4.2
-scipy==1.11.4
-seaborn==0.13.2
-tqdm==4.65.0

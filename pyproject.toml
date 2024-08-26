@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "normative_diversity"
+version = "0.0.1"
+description = "Package about normative diverity"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Sanne Vrijenhoek", email = "s.vrijenhoek@uva.nl" }]
+dependencies = ["numpy>2.0,<3.0", "scikit_learn==1.5.1", "scipy==1.14.1"]
