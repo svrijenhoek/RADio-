@@ -4,10 +4,33 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "normative_diversity"
-version = "0.0.1"
-description = "Package about normative diverity"
-readme = "README.md"
-requires-python = ">=3.9"
-license = { file = "LICENSE" }
+version = "0.0.2"
+
+description = "Fundamental package for beyond-accuracy in Python"
 authors = [{ name = "Sanne Vrijenhoek", email = "s.vrijenhoek@uva.nl" }]
+maintainers = [
+    { name = "Johannes Kruse", email = "johannes-kruse@hotmail.com" },
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = { file = "LICENSE" }
 dependencies = ["numpy>2.0,<3.0", "scikit_learn==1.5.1", "scipy==1.14.1"]
+
+[project.urls]
+# homepage = ""
+# documentation = ""
+source = "https://github.com/svrijenhoek/RADio-"
+tracker = "https://github.com/svrijenhoek/RADio-/issues"
+download = "https://pypi.org/project/normative-diversity/#files"
+
+
+[project.optional-dependencies]
+# pip install "normative_diversity[examples]"
+examples = [
+    "nltk==3.8.1",
+    "pandas==1.1.5",
+    "plotly==5.9.0",
+    "scipy==1.11.4",
+    "seaborn==0.13.2",
+    "tqdm==4.65.0",
+]
