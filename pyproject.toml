@@ -14,12 +14,7 @@ maintainers = [
 requires-python = ">=3.9"
 readme = "README.md"
 license = { file = "LICENSE" }
-dependencies = [
-    "numpy>2.0,<3.0",
-    "scikit_learn==1.5.1",
-    "scipy==1.14.1",
-    "pytest",
-]
+dependencies = ["numpy>2.0,<3.0", "scikit_learn==1.5.1", "scipy==1.14.1"]
 
 [project.urls]
 # homepage = ""
@@ -30,7 +25,8 @@ download = "https://pypi.org/project/normative-diversity/#files"
 
 
 [project.optional-dependencies]
-# pip install "normative_diversity[examples]"
+# pip install "normative_diversity[test]"
+test = ["pytest"]
 examples = [
     "nltk==3.8.1",
     "pandas==1.1.5",
