@@ -3,6 +3,24 @@ import numpy as np
 from sklearn.preprocessing import KBinsDiscretizer
 
 
+def harmonic_number(n):
+    """
+    Calculate an approximate value of the n-th harmonic number.
+
+    Args:
+        n (int): The positive integer for which to calculate the harmonic number.
+
+    Returns:
+        float: An approximation of the n-th harmonic number.
+
+    References:
+        - Harmonic Number: http://en.wikipedia.org/wiki/Harmonic_number
+    """
+    # Euler-Mascheroni constant
+    gamma = 0.57721566490153286060651209008240243104215933593992
+    return gamma + math.log(n) + 0.5 / n - 1.0 / (12 * n**2) + 1.0 / (120 * n**4)
+
+
 class DistributionBuilder:
     """
     Class that turns a list of properties into a normalized distribution
@@ -29,15 +47,6 @@ class DistributionBuilder:
         elif self.feature_type == "cat_m":
             return self.categorical_multi(x)
 
-    @staticmethod
-    def harmonic_number(n):
-        """Returns an approximate value of n-th harmonic number.
-        http://en.wikipedia.org/wiki/Harmonic_number
-        """
-        # Euler-Mascheroni constant
-        gamma = 0.57721566490153286060651209008240243104215933593992
-        return gamma + math.log(n) + 0.5 / n - 1.0 / (12 * n**2) + 1.0 / (120 * n**4)
-
     def categorical(self, x):
         """ "
         Parameters
@@ -50,7 +59,7 @@ class DistributionBuilder:
 
         """
         n = len(x)
-        sum_one_over_ranks = self.harmonic_number(n)
+        sum_one_over_ranks = harmonic_number(n)
         distribution = {}
         count = 0
         for _, item in enumerate(x):
@@ -76,7 +85,7 @@ class DistributionBuilder:
 
         """
         n = len(x)
-        sum_one_over_ranks = self.harmonic_number(n)
+        sum_one_over_ranks = harmonic_number(n)
         distribution = {}
         for i, item in enumerate(x):
             for j, entry in enumerate(item):
@@ -109,7 +118,7 @@ class DistributionBuilder:
 
         """
         n = len(x)
-        sum_one_over_ranks = self.harmonic_number(n)
+        sum_one_over_ranks = harmonic_number(n)
         arr_binned = self.bins_discretizer.transform(np.array(x).reshape(-1, 1))
         distribution = {}
         if self.rank_aware:
