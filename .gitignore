@@ -1,8 +1,9 @@
+.pytest_cache
+__pycache__
+.DS_Store
+*.egg-info
+.idea
+
 build
 dist
-.idea
-__pycache__
-*.egg-info
 venv
-.DS_Store
-.pytest_cache
