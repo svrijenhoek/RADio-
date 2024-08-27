@@ -25,13 +25,13 @@ download = "https://pypi.org/project/normative-diversity/#files"
 
 
 [project.optional-dependencies]
-# pip install "normative_diversity[test]"
+# pip install ".[test]"
 test = ["pytest"]
 examples = [
     "nltk==3.8.1",
-    "pandas==1.1.5",
-    "plotly==5.9.0",
-    "scipy==1.11.4",
+    "pandas>=2.0.0",
+    "plotly==5.23.0",
     "seaborn==0.13.2",
     "tqdm==4.65.0",
+    "nbformat>=4.2.0",
 ]

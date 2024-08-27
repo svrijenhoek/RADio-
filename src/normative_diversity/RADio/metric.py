@@ -1,7 +1,7 @@
 import numpy as np
 
-from RADio.divergence import Divergence
-from RADio.distributions import DistributionBuilder
+from normative_diversity.RADio.distributions import DistributionBuilder
+from normative_diversity.RADio.divergence import Divergence
 
 
 class DiversityMetric:

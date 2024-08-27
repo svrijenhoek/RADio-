@@ -3,3 +3,17 @@
 
 
 # Normative Diversity
+
+
+
+## Install locally for development
+Make enviroment:
+```
+conda create -p venv python==3.11.8
+conda activate ./venv
+```
+Install ```normative_diversity```
+```
+pip install -e . 
+```
+
